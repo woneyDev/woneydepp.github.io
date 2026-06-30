@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: portfolio-api
+
+  # ── PostgreSQL 연결 (환경변수로 주입, 코드에 비밀번호 없음) ──
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/portfolio}
+    username: ${SPRING_DATASOURCE_USERNAME:portfolio_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:changeme}
+    driver-class-name: org.postgresql.Driver
+
+  # ── JPA 설정 ──
+  jpa:
+    hibernate:
+      # 운영: validate / 개발: update
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # ── Redis 연결 (중복 로그인 차단 + 서비스 간 캐싱) ──
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+      timeout: 3000ms
+
+# ── 서버 설정 ──
+server:
+  port: ${SERVER_PORT:8080}
+
+# ── 세션 만료 시간 (초 단위) ──
+session:
+  ttl-seconds: ${SESSION_TTL_SECONDS:3600}
