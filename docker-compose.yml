@@ -27,7 +27,7 @@ services:
   data-service:
     build: ./services/data-service
     ports:
-      - "8082:8000"
+      - "8082:8080"
     environment:
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - REDIS_HOST=${REDIS_HOST}
