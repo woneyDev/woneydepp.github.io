@@ -18,27 +18,48 @@
 
 ---
 
-## 🏗️ 멀티 랭귀지 시스템 아키텍처 규칙
+## 🛡️ 인프라 구축 철학 및 비용 방어 규칙 (최우선 지침)
 
-이 포트폴리오 웹서비스는 단순히 화면만 보여주는 정적 페이지가 아닙니다. 내부적으로 **Java**와 **Python**이 각자의 역할을 명확히 나누어 처리하는 확장형 구조를 가집니다. 당신이 구성할 모든 도구와 코드는 이 기준을 엄격히 따릅니다.
+1. **상용 클러스터 상시 구동 배포 절대 금지**: AWS EKS 등 고정 비용 리스크를 원천 차단합니다.
+2. **로컬 가상 인프라 및 IaC 중심**: 모든 구성은 `Dockerfile`, `.yaml`로 자산화하여 Git에 보관합니다.
+3. **이중화 배포 전략**: 겉면은 GitHub Pages(무료)로 서비스하고, DevOps 기술력은 공개된 코드(IaC)로 증명합니다.
+
+### ⚠️ 리스크 관리 및 방어 전략 (추가)
+1. **설정 불일치 방지**: 환경별(`base`/`local`/`aws`) 설정 격리 및 배포 파이프라인 내 스키마 검증 프로세스를 도입합니다.
+2. **보안 정보 유출 방지**: 민감 정보(Secret)는 코드에 절대 포함하지 않고, 런타임 시 외부 주입(Injection) 방식을 적용합니다.
+3. **환경 격차 방지**: Docker를 사용하여 로컬과 운영 환경의 패리티(Parity)를 유지합니다.
+
+> **팀 커뮤니케이션 대응 논리**:
+> "현재 환경 파편화 문제를 해결하기 위해 base/local/aws로 구조 개선을 진행 중입니다. 이 과정에서 발생할 수 있는 설정 불일치와 보안 사고를 방지하기 위해, 환경별 설정 스키마 검증 프로세스를 도입하고 민감 정보는 런타임에 외부 주입(Injection)하는 방식을 적용하여 구조적 안전성을 확보하겠습니다."
+
+---
+
+## 🏗️ 멀티 랭귀지 및 인프라 아키텍처 규칙
+
+이 포트폴리오 웹서비스는 단순히 화면만 보여주는 정적 페이지가 아닙니다. 내부적으로 **Java**와 **Python**이 각자의 역할을 명확히 나누어 처리하며, 현대적인 **컨테이너 및 오케스트레이션 인프라**를 갖춘 고성능 확장형 구조를 가집니다. 당신이 구성할 모든 도구와 코드는 이 기준을 엄격히 따릅니다.
 
 ### 1. Java 처리 영역 (Backend Core)
 - **역할**: 핵심 비즈니스 로직, 웹 서버 API 및 사용자 요청 처리
 - **기능**: 데이터베이스(DB) 연동, 회원 정보 및 포트폴리오 메인 데이터 관리
 - **기준**: 안정성과 확장성, 대규모 트래픽 처리가 필요한 메인 시스템의 뼈대로 작동합니다.
 - **세부 요구사항**:
-    - Java 버전은 LTS 중 가장 최신 버전(Java 25)을 사용합니다.
-    - 데이터베이스 연동 시 JPA를 필수로 적용합니다.
-    - Redis를 도입하여, 다른 브라우저에서 중복 로그인이 안 되도록 중복 로그인 차단 정책을 완벽히 구현합니다.
+  - Java 버전은 LTS 중 가장 최신 버전(Java 25)을 사용합니다.
+  - 데이터베이스 연동 시 JPA를 필수로 적용합니다.
+  - Redis를 도입하여, 다른 브라우저에서 중복 로그인이 안 되도록 중복 로그인 차단 정책을 완벽히 구현합니다.
 
 ### 2. Python 처리 영역 (Data & Automation)
 - **역할**: 데이터 분석, 정보 스크래핑, 자동화 및 AI 연동 백그라운드 작업
 - **기능**: 외부 API(예: GitHub API)를 통한 개발자 활동 데이터 스크래핑 및 분석, 이력서 PDF 자동 변환/생성, AI 기반 포트폴리오 최적화
 - **기준**: 복잡한 데이터 연산이나 자동화 스크립트, 무거운 비동기 작업 처리에 작동합니다.
 
-### 3. 고성능 및 레이턴시 최소화 규칙
+### 3. 웹 서버 최적화 및 인프라 현대화 영역 (Nginx, Docker, Kubernetes)
+- **Nginx 웹 서버 최적화**: 웹 서빙 효율 극대화를 위해 정적 파일 캐싱, gzip 압축, 라우팅 처리를 정의한 `nginx.conf`를 직접 관리합니다.
+- **Docker 컨테이너화**: 애플리케이션과 Nginx 서버를 하나의 독립된 환경으로 묶는 최적화된 용량의 `Dockerfile`을 구현합니다.
+- **Kubernetes 오케스트레이션**: 로컬 가상 클러스터(Minikube 등) 환경에서 Pod, Deployment, Service, Ingress 아키텍처를 선언적 코드(`.yaml` 파일)로 설계하여 서비스 안정성(Self-healing)과 트래픽 분산 구조를 검증합니다.
+
+### 4. 고성능 및 레이턴시 최소화 규칙
 - **하이브리드 정적-동적 구조**: 웹 로딩 레이턴시를 최소화하기 위해 기본 페이지 틀과 정적 데이터는 GitHub Pages CDN에서 즉시 로딩하며, 실시간 데이터(GitHub 수집 현황 등)는 페이지 로드 후 Java API와 비동기 통신(`fetch`)을 통해 즉시 채워 넣습니다.
-- **Redis 고속 캐싱**: Java 서버와 Python 서비스 간의 빈번한 데이터 요청으로 인한 네트워크 병목을 원천 차단하기 위해, Railway 인프라 내에 Redis 캐시 계층을 배치하여 서비스 간 조회 지연 시간을 최소화합니다.
+- **Redis 고속 캐싱**: Java 서버와 Python 서비스 간의 빈번한 데이터 요청으로 인한 네트워크 병목을 원천 차단하기 위해, 인프라 내에 Redis 캐시 계층을 배치하여 서비스 간 조회 지연 시간을 최소화합니다.
 
 ---
 
@@ -56,8 +77,8 @@
 목표가 무엇인지, 어떤 입력값이 필요한지, 어떤 Tool을 돌릴지, 결과물이 어때야 하는지, 문제가 생기면 어떻게 하는지.
 첫 출근날 받는 업무 매뉴얼이라고 생각하면 됩니다. 한 번이라도 반복되는 업무는 Workflow가 생깁니다.
 
-수정된 9개의 워크플로우 목록은 다음과 같습니다:
-- **Frontend**: `setup-frontend` (처음 1회 세팅), `update-content` (화면 내용 바꿀 때), `deploy-frontend` (화면 배포할 때)
+수정된 11개의 워크플로우 목록은 다음과 같습니다:
+- **Frontend & Infra**: `setup-frontend` (처음 1회 세팅), `update-content` (화면 내용 바꿀 때), `deploy-frontend` (화면 무료 배포할 때), `containerize-nginx` (Nginx+Docker 빌드), `orchestrate-k8s` (로컬 쿠버네티스 환경 구성 및 검증)
 - **Java**: `setup-java-server` (처음 1회 서버 세팅), `manage-portfolio-data` (데이터 추가·수정·삭제), `deploy-java-api` (서버 배포할 때)
 - **Python**: `scrape-github` (GitHub 활동 데이터 최신화), `generate-pdf` (PDF 이력서 뽑을 때), `ai-optimize` (AI로 포트폴리오 개선할 때)
 
@@ -77,6 +98,7 @@
 ## Environment
 
 - **Core Runtimes**: Node.js 24.18.0 (시스템 관리/빌드용), Java 25 LTS (메인 백엔드), Python 3.x (데이터/자동화)
+- **Infrastructures**: Docker Desktop, Kubernetes (Minikube / Docker Desktop K8s), Nginx
 - **Package manager**: npm
 - **IDE**: IntelliJ IDEA (project files in `.idea/`)
-- **Architecture Base**: Java API Server (JPA, Redis 중복 로그인 방지 및 서비스 간 고속 캐싱 적용) + Python Data Analyzer + Web Frontend (React 및 하이브리드 비동기 fetch 적용)
+- **Architecture Base**: Java API Server (JPA, Redis 중복 로그인 방지 및 서비스 간 고속 캐싱 적용) + Python Data Analyzer + Web Frontend (React, 하이브리드 비동기 fetch 및 가상 K8s IaC 아키텍처 적용)
