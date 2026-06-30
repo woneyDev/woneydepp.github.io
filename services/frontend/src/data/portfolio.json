@@ -1,0 +1,39 @@
+﻿{
+  "hero": {
+    "title": "안녕하세요, 혁신을 주도하는 풀스택 개발자입니다",
+    "subtitle": "Java 백엔드와 React 프론트엔드를 아우르며, 확장 가능하고 유지보수하기 좋은 아키텍처를 설계합니다.",
+    "email": "developer@example.com",
+    "github": "https://github.com"
+  },
+  "skills": [
+    { "name": "Java / Spring Boot", "level": "Advanced" },
+    { "name": "JavaScript / React", "level": "Intermediate" },
+    { "name": "MySQL / PostgreSQL", "level": "Advanced" },
+    { "name": "Docker / AWS", "level": "Intermediate" }
+  ],
+  "projects": [
+    {
+      "title": "E-Commerce 플랫폼 구축",
+      "description": "Spring Boot와 React를 활용한 대규모 커머스 시스템. MSA 아키텍처를 도입하여 트래픽 분산을 구현했습니다.",
+      "techStack": ["Spring Boot", "React", "MySQL", "Docker"],
+      "period": "2026.01 - 2026.05"
+    },
+    {
+      "title": "실시간 데이터 대시보드",
+      "description": "WebSocket을 활용해 서버의 리소스 상태 및 로그를 실시간으로 시각화하는 모니터링 도구입니다.",
+      "techStack": ["Java", "React", "D3.js", "WebSocket"],
+      "period": "2025.10 - 2025.12"
+    }
+  ],
+  "career": [
+    {
+      "company": "테크이노베이션",
+      "role": "선임 개발자",
+      "period": "2024.03 - 현재",
+      "achievements": [
+        "백엔드 API 성능 최적화를 통해 응답 속도 30% 개선",
+        "레거시 시스템을 Spring Boot 기반의 현대적 아키텍처로 마이그레이션 유도"
+      ]
+    }
+  ]
+}
